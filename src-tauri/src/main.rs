@@ -437,12 +437,58 @@ fn install_git_linux() -> CommandResult {
 // Commands: install Obsidian
 // ---------------------------------------------------------------------------
 
+const OBSIDIAN_RELEASES_API: &str = "https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest";
+
+fn http_client() -> Result<reqwest::blocking::Client, String> {
+    reqwest::blocking::Client::builder()
+        .user_agent("My-Brain-Is-Full-Crew")
+        .build()
+        .map_err(|e| format!("HTTP client error: {}", e))
+}
+
+fn download_file(client: &reqwest::blocking::Client, url: &str, dest: &Path) -> Result<(), String> {
+    let mut resp = client.get(url).send().map_err(|e| format!("Download error: {}", e))?;
+    let mut file = fs::File::create(dest).map_err(|e| format!("File creation error: {}", e))?;
+    std::io::copy(&mut resp, &mut file).map_err(|e| format!("Write error: {}", e))?;
+    Ok(())
+}
+
+fn find_obsidian_asset(body: &serde_json::Value, suffix: &str) -> Option<String> {
+    body["assets"].as_array()?.iter().find_map(|a| {
+        let name = a["name"].as_str().unwrap_or("");
+        if name.ends_with(suffix) && !name.contains("arm") {
+            a["browser_download_url"].as_str().map(|s| s.to_string())
+        } else {
+            None
+        }
+    })
+}
+
+fn find_obsidian_asset_arch(body: &serde_json::Value, suffix: &str, arch_hint: &str) -> Option<String> {
+    body["assets"].as_array()?.iter().find_map(|a| {
+        let name = a["name"].as_str().unwrap_or("");
+        if name.ends_with(suffix) && name.contains(arch_hint) {
+            a["browser_download_url"].as_str().map(|s| s.to_string())
+        } else {
+            None
+        }
+    })
+}
+
+fn fetch_obsidian_release() -> Result<serde_json::Value, String> {
+    let client = http_client()?;
+    let resp = client.get(OBSIDIAN_RELEASES_API).send()
+        .map_err(|e| format!("Error fetching Obsidian releases: {}", e))?;
+    resp.json::<serde_json::Value>()
+        .map_err(|e| format!("Error parsing response: {}", e))
+}
+
 #[tauri::command]
 fn install_obsidian(app_handle: tauri::AppHandle) -> CommandResult {
     if is_obsidian_installed() {
         return CommandResult {
             success: true,
-            message: "Obsidian e' gia' installato.".to_string(),
+            message: "Obsidian is already installed.".to_string(),
         };
     }
 
@@ -462,74 +508,114 @@ fn install_obsidian(app_handle: tauri::AppHandle) -> CommandResult {
     }
 }
 
-#[cfg(target_os = "macos")]
-fn install_obsidian_macos(app_handle: &tauri::AppHandle) -> CommandResult {
-    let dmg_path = match resolve_resource(app_handle, "Obsidian.dmg") {
-        Some(p) => p,
-        None => {
-            return CommandResult {
-                success: false,
-                message: "Installer Obsidian.dmg non trovato nel bundle dell'app.".to_string(),
-            };
-        }
-    };
+// ---------------------------------------------------------------------------
+// macOS: install Obsidian from DMG (bundled or downloaded)
+// ---------------------------------------------------------------------------
 
-    // Mount the DMG
+#[cfg(target_os = "macos")]
+fn install_from_dmg(dmg_path: &Path) -> CommandResult {
     let mount_output = Command::new("hdiutil")
         .args(["attach", &dmg_path.to_string_lossy(), "-nobrowse", "-quiet"])
         .output();
 
     match mount_output {
         Ok(output) if output.status.success() => {
-            // Find the mounted Obsidian volume
             let volume_path = find_volume_containing("Obsidian.app");
             match volume_path {
                 Some(volume) => {
                     let obsidian_app = Path::new(&volume).join("Obsidian.app");
-
-                    // Copy to /Applications
                     let copy_result = Command::new("cp")
                         .args(["-R", &obsidian_app.to_string_lossy(), "/Applications/"])
                         .output();
 
-                    // Always detach
                     Command::new("hdiutil")
                         .args(["detach", &volume, "-quiet"])
-                        .output()
-                        .ok();
+                        .output().ok();
 
                     match copy_result {
                         Ok(o) if o.status.success() => CommandResult {
                             success: true,
-                            message: "Obsidian installato con successo in /Applications!".to_string(),
+                            message: "Obsidian installed to /Applications!".to_string(),
                         },
                         Ok(o) => CommandResult {
                             success: false,
-                            message: format!("Errore copia: {}", String::from_utf8_lossy(&o.stderr)),
+                            message: format!("Copy error: {}", String::from_utf8_lossy(&o.stderr)),
                         },
                         Err(e) => CommandResult {
                             success: false,
-                            message: format!("Errore cp: {}", e),
+                            message: format!("Error: {}", e),
                         },
                     }
                 }
                 None => {
-                    // Try to detach any obsidian volume
                     detach_obsidian_volumes();
                     CommandResult {
                         success: false,
-                        message: "Volume Obsidian non trovato dopo il mount del DMG.".to_string(),
+                        message: "Obsidian volume not found after mounting DMG.".to_string(),
                     }
                 }
             }
         }
         Ok(output) => CommandResult {
             success: false,
-            message: format!("Errore mount DMG: {}", String::from_utf8_lossy(&output.stderr)),
+            message: format!("DMG mount error: {}", String::from_utf8_lossy(&output.stderr)),
         },
         Err(e) => CommandResult {
             success: false,
-            message: format!("Errore hdiutil: {}", e),
+            message: format!("hdiutil error: {}", e),
+        },
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn install_obsidian_macos(app_handle: &tauri::AppHandle) -> CommandResult {
+    // Try bundled DMG first
+    if let Some(bundled) = resolve_resource(app_handle, "Obsidian.dmg") {
+        let result = install_from_dmg(&bundled);
+        if result.success {
+            return result;
+        }
+    }
+
+    // Download from GitHub releases
+    let body = match fetch_obsidian_release() {
+        Ok(b) => b,
+        Err(e) => return CommandResult {
+            success: false,
+            message: format!("{}\nInstall manually from https://obsidian.md/download", e),
+        },
+    };
+
+    // Detect architecture: arm64 or x86_64
+    let is_arm = std::env::consts::ARCH == "aarch64";
+
+    let url = if is_arm {
+        find_obsidian_asset(&body, "-arm64.dmg")
+    } else {
+        // For Intel, find a .dmg that is NOT arm64
+        find_obsidian_asset(&body, ".dmg")
+            .or_else(|| find_obsidian_asset_arch(&body, ".dmg", "universal"))
+    };
+
+    let url = match url {
+        Some(u) => u,
+        None => return CommandResult {
+            success: false,
+            message: "Could not find Obsidian DMG for your architecture.\nInstall manually from https://obsidian.md/download".to_string(),
+        },
+    };
+
+    let temp = std::env::temp_dir().join("Obsidian-download.dmg");
+    let client = match http_client() {
+        Ok(c) => c,
+        Err(e) => return CommandResult { success: false, message: e },
+    };
+
+    match download_file(&client, &url, &temp) {
+        Ok(_) => install_from_dmg(&temp),
+        Err(e) => CommandResult {
+            success: false,
+            message: format!("{}\nInstall manually from https://obsidian.md/download", e),
         },
     }
 }
@@ -555,105 +641,161 @@ fn detach_obsidian_volumes() {
             if name.contains("obsidian") {
                 Command::new("hdiutil")
                     .args(["detach", &entry.path().to_string_lossy(), "-quiet"])
-                    .output()
-                    .ok();
+                    .output().ok();
             }
         }
     }
 }
 
+// ---------------------------------------------------------------------------
+// Windows: install Obsidian (bundled or downloaded)
+// ---------------------------------------------------------------------------
+
 #[cfg(target_os = "windows")]
 fn install_obsidian_windows(app_handle: &tauri::AppHandle) -> CommandResult {
-    let installer = match resolve_resource(app_handle, "Obsidian-Setup.exe") {
-        Some(p) => p,
-        None => {
-            return CommandResult {
-                success: false,
-                message: "Installer Obsidian-Setup.exe non trovato nel bundle dell'app.".to_string(),
-            };
+    // Try bundled installer first
+    if let Some(bundled) = resolve_resource(app_handle, "Obsidian-Setup.exe") {
+        match Command::new(&bundled).args(["/S"]).spawn() {
+            Ok(mut child) => {
+                match child.wait() {
+                    Ok(status) if status.success() => {
+                        return CommandResult {
+                            success: true,
+                            message: "Obsidian installed successfully!".to_string(),
+                        };
+                    }
+                    _ => {} // Fall through to download
+                }
+            }
+            Err(_) => {} // Fall through to download
         }
+    }
+
+    // Download from GitHub releases
+    let body = match fetch_obsidian_release() {
+        Ok(b) => b,
+        Err(e) => return CommandResult {
+            success: false,
+            message: format!("{}\nInstall manually from https://obsidian.md/download", e),
+        },
     };
 
-    // Run the NSIS installer silently
-    match Command::new(&installer)
-        .args(["/S"])  // NSIS silent install
-        .spawn()
-    {
+    let url = find_obsidian_asset(&body, ".exe");
+    let url = match url {
+        Some(u) => u,
+        None => return CommandResult {
+            success: false,
+            message: "Could not find Obsidian installer.\nInstall manually from https://obsidian.md/download".to_string(),
+        },
+    };
+
+    let temp = std::env::temp_dir().join("Obsidian-Setup-download.exe");
+    let client = match http_client() {
+        Ok(c) => c,
+        Err(e) => return CommandResult { success: false, message: e },
+    };
+
+    if let Err(e) = download_file(&client, &url, &temp) {
+        return CommandResult {
+            success: false,
+            message: format!("{}\nInstall manually from https://obsidian.md/download", e),
+        };
+    }
+
+    match Command::new(&temp).args(["/S"]).spawn() {
         Ok(mut child) => {
-            // Wait for completion
             match child.wait() {
                 Ok(status) if status.success() => CommandResult {
                     success: true,
-                    message: "Obsidian installato con successo!".to_string(),
+                    message: "Obsidian downloaded and installed successfully!".to_string(),
                 },
                 Ok(status) => CommandResult {
                     success: false,
-                    message: format!("L'installer e' uscito con codice: {}", status),
+                    message: format!("Installer exited with code: {}", status),
                 },
                 Err(e) => CommandResult {
                     success: false,
-                    message: format!("Errore durante l'attesa dell'installer: {}", e),
+                    message: format!("Error waiting for installer: {}", e),
                 },
             }
         }
         Err(e) => CommandResult {
             success: false,
-            message: format!("Errore nell'avvio dell'installer: {}", e),
+            message: format!("Error running installer: {}", e),
         },
     }
 }
 
-#[cfg(target_os = "linux")]
-fn install_obsidian_linux(app_handle: &tauri::AppHandle) -> CommandResult {
-    let appimage = match resolve_resource(app_handle, "Obsidian.AppImage") {
-        Some(p) => p,
-        None => {
-            return CommandResult {
-                success: false,
-                message: "Obsidian.AppImage non trovato nel bundle dell'app.".to_string(),
-            };
-        }
-    };
+// ---------------------------------------------------------------------------
+// Linux: install Obsidian AppImage (bundled or downloaded)
+// ---------------------------------------------------------------------------
 
-    // Create ~/Applications if it doesn't exist
+#[cfg(target_os = "linux")]
+fn setup_obsidian_appimage(source: &Path) -> CommandResult {
     let home = std::env::var("HOME").unwrap_or_else(|_| "/home".to_string());
     let apps_dir = PathBuf::from(&home).join("Applications");
     fs::create_dir_all(&apps_dir).ok();
 
     let dest = apps_dir.join("Obsidian.AppImage");
 
-    // Copy AppImage to ~/Applications
-    match fs::copy(&appimage, &dest) {
+    match fs::copy(source, &dest) {
         Ok(_) => {
-            // Make it executable
-            let chmod_result = Command::new("chmod")
+            Command::new("chmod")
                 .args(["+x", &dest.to_string_lossy()])
-                .output();
+                .output().ok();
 
-            match chmod_result {
-                Ok(o) if o.status.success() => {
-                    // Create a .desktop entry for integration
-                    create_obsidian_desktop_entry(&dest, &home);
-                    CommandResult {
-                        success: true,
-                        message: format!(
-                            "Obsidian installato in {}!\nL'AppImage e' pronto per l'uso.",
-                            dest.display()
-                        ),
-                    }
-                }
-                _ => CommandResult {
-                    success: true,
-                    message: format!(
-                        "Obsidian copiato in {} ma chmod +x potrebbe essere fallito.\nRendilo eseguibile manualmente: chmod +x {}",
-                        dest.display(), dest.display()
-                    ),
-                },
+            create_obsidian_desktop_entry(&dest, &home);
+            CommandResult {
+                success: true,
+                message: format!("Obsidian installed to {}!", dest.display()),
             }
         }
         Err(e) => CommandResult {
             success: false,
-            message: format!("Errore nella copia dell'AppImage: {}", e),
+            message: format!("Error copying AppImage: {}", e),
+        },
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn install_obsidian_linux(app_handle: &tauri::AppHandle) -> CommandResult {
+    // Try bundled AppImage first
+    if let Some(bundled) = resolve_resource(app_handle, "Obsidian.AppImage") {
+        let result = setup_obsidian_appimage(&bundled);
+        if result.success {
+            return result;
+        }
+    }
+
+    // Download from GitHub releases
+    let body = match fetch_obsidian_release() {
+        Ok(b) => b,
+        Err(e) => return CommandResult {
+            success: false,
+            message: format!("{}\nInstall manually from https://obsidian.md/download", e),
+        },
+    };
+
+    let url = find_obsidian_asset(&body, ".AppImage");
+    let url = match url {
+        Some(u) => u,
+        None => return CommandResult {
+            success: false,
+            message: "Could not find Obsidian AppImage.\nInstall manually from https://obsidian.md/download".to_string(),
+        },
+    };
+
+    let temp = std::env::temp_dir().join("Obsidian-download.AppImage");
+    let client = match http_client() {
+        Ok(c) => c,
+        Err(e) => return CommandResult { success: false, message: e },
+    };
+
+    match download_file(&client, &url, &temp) {
+        Ok(_) => setup_obsidian_appimage(&temp),
+        Err(e) => CommandResult {
+            success: false,
+            message: format!("{}\nInstall manually from https://obsidian.md/download", e),
         },
     }
 }
