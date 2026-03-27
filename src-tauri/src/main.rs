@@ -185,7 +185,7 @@ fn install_git(#[allow(unused)] app_handle: tauri::AppHandle) -> CommandResult {
     if is_git_installed() {
         return CommandResult {
             success: true,
-            message: "Git e' gia' installato.".to_string(),
+            message: "Git is already installed.".to_string(),
         };
     }
 
@@ -195,78 +195,241 @@ fn install_git(#[allow(unused)] app_handle: tauri::AppHandle) -> CommandResult {
         match Command::new("xcode-select").arg("--install").spawn() {
             Ok(_) => CommandResult {
                 success: true,
-                message: "Installazione Xcode Command Line Tools avviata.\nSegui la finestra di dialogo del sistema per completare.\nUna volta finito, clicca 'Ricontrolla'.".to_string(),
+                message: "Xcode Command Line Tools installation started.\nFollow the system dialog to complete.\nClick 'Recheck' when done.".to_string(),
             },
             Err(e) => CommandResult {
                 success: false,
-                message: format!("Errore nell'avvio dell'installazione: {}", e),
+                message: format!("Error starting installation: {}", e),
             },
         }
     }
 
     #[cfg(target_os = "windows")]
     {
-        // Windows: run bundled Git installer
-        let installer = resolve_resource(&app_handle, "Git-Installer.exe");
-        match installer {
-            Some(path) => {
-                match Command::new(&path)
-                    .args(["/VERYSILENT", "/NORESTART", "/NOCANCEL", "/SP-"])
-                    .spawn()
-                {
-                    Ok(_) => CommandResult {
-                        success: true,
-                        message: "Installazione di Git avviata.\nAttendi il completamento, poi clicca 'Ricontrolla'.".to_string(),
-                    },
-                    Err(e) => CommandResult {
-                        success: false,
-                        message: format!("Errore nell'avvio dell'installer Git: {}", e),
-                    },
-                }
-            }
-            None => CommandResult {
-                success: false,
-                message: "Installer Git non trovato nel bundle dell'app.".to_string(),
-            },
-        }
+        // Windows: download the correct Git installer for this architecture
+        install_git_windows(&app_handle)
     }
 
     #[cfg(target_os = "linux")]
     {
         let _ = app_handle;
-        // Linux: try common package managers with pkexec for privilege escalation
-        let (pm, args): (&str, Vec<&str>) = if check_command("apt", &["--version"]) {
-            ("pkexec", vec!["apt", "install", "-y", "git"])
-        } else if check_command("dnf", &["--version"]) {
-            ("pkexec", vec!["dnf", "install", "-y", "git"])
-        } else if check_command("pacman", &["--version"]) {
-            ("pkexec", vec!["pacman", "-S", "--noconfirm", "git"])
-        } else if check_command("zypper", &["--version"]) {
-            ("pkexec", vec!["zypper", "install", "-y", "git"])
-        } else {
+        install_git_linux()
+    }
+}
+
+#[cfg(target_os = "windows")]
+fn install_git_windows(app_handle: &tauri::AppHandle) -> CommandResult {
+    // Determine architecture
+    let is_64bit = std::mem::size_of::<usize>() == 8;
+    let arch_suffix = if is_64bit { "64-bit" } else { "32-bit" };
+
+    // First try the bundled installer if it exists and matches arch
+    if let Some(bundled) = resolve_resource(app_handle, "Git-Installer.exe") {
+        // Try to run bundled installer
+        match Command::new(&bundled)
+            .args(["/VERYSILENT", "/NORESTART", "/NOCANCEL", "/SP-"])
+            .spawn()
+        {
+            Ok(_) => {
+                return CommandResult {
+                    success: true,
+                    message: format!(
+                        "Git installer ({}) started.\nWait for it to complete, then click 'Recheck'.",
+                        arch_suffix
+                    ),
+                };
+            }
+            Err(_) => {
+                // Bundled installer failed, fall through to download
+            }
+        }
+    }
+
+    // Download the correct version from GitHub
+    let api_url = "https://api.github.com/repos/git-for-windows/git/releases/latest";
+
+    let client = match reqwest::blocking::Client::builder()
+        .user_agent("My-Brain-Is-Full-Crew")
+        .build()
+    {
+        Ok(c) => c,
+        Err(e) => {
             return CommandResult {
                 success: false,
-                message: "Nessun package manager supportato trovato.\nInstalla git manualmente.".to_string(),
+                message: format!("Error creating HTTP client: {}", e),
             };
-        };
+        }
+    };
 
-        match Command::new(pm).args(&args).output() {
-            Ok(output) if output.status.success() => CommandResult {
-                success: true,
-                message: "Git installato con successo!".to_string(),
-            },
+    let response = match client.get(api_url).send() {
+        Ok(r) => r,
+        Err(e) => {
+            return CommandResult {
+                success: false,
+                message: format!("Error fetching Git releases: {}.\nInstall Git manually from https://git-scm.com/download/win", e),
+            };
+        }
+    };
+
+    let body: serde_json::Value = match response.json() {
+        Ok(v) => v,
+        Err(e) => {
+            return CommandResult {
+                success: false,
+                message: format!("Error parsing response: {}.\nInstall Git manually from https://git-scm.com/download/win", e),
+            };
+        }
+    };
+
+    // Find the right installer asset for our architecture
+    let search_pattern = if is_64bit { "Git-" } else { "Git-" };
+    let arch_pattern = if is_64bit { "64-bit.exe" } else { "32-bit.exe" };
+
+    let download_url = body["assets"]
+        .as_array()
+        .and_then(|assets| {
+            assets.iter().find_map(|a| {
+                let name = a["name"].as_str().unwrap_or("");
+                if name.starts_with(search_pattern) && name.ends_with(arch_pattern) {
+                    a["browser_download_url"].as_str().map(|s| s.to_string())
+                } else {
+                    None
+                }
+            })
+        });
+
+    let url = match download_url {
+        Some(u) => u,
+        None => {
+            return CommandResult {
+                success: false,
+                message: format!(
+                    "Could not find {} Git installer.\nInstall manually from https://git-scm.com/download/win",
+                    arch_suffix
+                ),
+            };
+        }
+    };
+
+    // Download to temp dir
+    let temp_dir = std::env::temp_dir();
+    let installer_path = temp_dir.join(format!("Git-Installer-{}.exe", arch_suffix));
+
+    match client.get(&url).send() {
+        Ok(mut resp) => {
+            let mut file = match fs::File::create(&installer_path) {
+                Ok(f) => f,
+                Err(e) => {
+                    return CommandResult {
+                        success: false,
+                        message: format!("Error creating temp file: {}", e),
+                    };
+                }
+            };
+            if let Err(e) = std::io::copy(&mut resp, &mut file) {
+                return CommandResult {
+                    success: false,
+                    message: format!("Error downloading Git installer: {}", e),
+                };
+            }
+        }
+        Err(e) => {
+            return CommandResult {
+                success: false,
+                message: format!("Error downloading Git: {}.\nInstall manually from https://git-scm.com/download/win", e),
+            };
+        }
+    }
+
+    // Run the downloaded installer
+    match Command::new(&installer_path)
+        .args(["/VERYSILENT", "/NORESTART", "/NOCANCEL", "/SP-"])
+        .spawn()
+    {
+        Ok(_) => CommandResult {
+            success: true,
+            message: format!(
+                "Git {} installer downloaded and started.\nWait for it to complete, then click 'Recheck'.",
+                arch_suffix
+            ),
+        },
+        Err(e) => CommandResult {
+            success: false,
+            message: format!("Error running Git installer: {}", e),
+        },
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn install_git_linux() -> CommandResult {
+    // Try common package managers — use pkexec if available, else try sudo with terminal
+    let pkg_cmd: Option<(&str, Vec<&str>)> = if check_command("apt", &["--version"]) {
+        Some(("apt", vec!["install", "-y", "git"]))
+    } else if check_command("dnf", &["--version"]) {
+        Some(("dnf", vec!["install", "-y", "git"]))
+    } else if check_command("pacman", &["--version"]) {
+        Some(("pacman", vec!["-S", "--noconfirm", "git"]))
+    } else if check_command("zypper", &["--version"]) {
+        Some(("zypper", vec!["install", "-y", "git"]))
+    } else {
+        None
+    };
+
+    let (pm, pm_args) = match pkg_cmd {
+        Some(v) => v,
+        None => {
+            return CommandResult {
+                success: false,
+                message: "No supported package manager found.\nInstall git manually (e.g. sudo apt install git).".to_string(),
+            };
+        }
+    };
+
+    // Try pkexec first (graphical privilege escalation)
+    if check_command("which", &["pkexec"]) {
+        let mut args = vec![pm];
+        args.extend(pm_args.iter());
+        match Command::new("pkexec").args(&args).output() {
+            Ok(output) if output.status.success() => {
+                return CommandResult {
+                    success: true,
+                    message: "Git installed successfully!".to_string(),
+                };
+            }
             Ok(output) => {
                 let stderr = String::from_utf8_lossy(&output.stderr);
-                CommandResult {
-                    success: false,
-                    message: format!("Errore nell'installazione: {}", stderr),
+                // If user dismissed pkexec dialog, don't treat as fatal — try alternatives
+                if !stderr.contains("dismissed") && !stderr.contains("Not authorized") {
+                    return CommandResult {
+                        success: false,
+                        message: format!("Installation error: {}", stderr),
+                    };
                 }
             }
-            Err(e) => CommandResult {
-                success: false,
-                message: format!("Errore: {}.\nProva a installare manualmente: sudo apt install git", e),
-            },
+            Err(_) => {} // Fall through to alternatives
         }
+    }
+
+    // Fallback: try running directly (might work if already root, e.g. Flatpak)
+    let mut args = pm_args.clone();
+    match Command::new(pm).args(&args).output() {
+        Ok(output) if output.status.success() => {
+            return CommandResult {
+                success: true,
+                message: "Git installed successfully!".to_string(),
+            };
+        }
+        _ => {}
+    }
+
+    // Final fallback: give the user the command to run
+    let full_cmd = format!("sudo {} {}", pm, pm_args.join(" "));
+    CommandResult {
+        success: false,
+        message: format!(
+            "Could not install Git automatically (needs root privileges).\nRun this in a terminal:\n\n  {}\n\nThen click 'Recheck'.",
+            full_cmd
+        ),
     }
 }
 

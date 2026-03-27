@@ -67,14 +67,15 @@ jobs:
         run: npm ci
 
       # Create placeholder resource files for CI (real installers are too large for git)
+      # Git is now downloaded at runtime, only Obsidian installers need placeholders
       - name: Create placeholder resources
         shell: bash
         run: |
           mkdir -p src-tauri/resources
-          # Create placeholder files if they don't exist (real installers are .gitignored)
           [ -f src-tauri/resources/Obsidian.dmg ] || echo "placeholder" > src-tauri/resources/Obsidian.dmg
           [ -f src-tauri/resources/Obsidian-Setup.exe ] || echo "placeholder" > src-tauri/resources/Obsidian-Setup.exe
           [ -f src-tauri/resources/Obsidian.AppImage ] || echo "placeholder" > src-tauri/resources/Obsidian.AppImage
+          # Git-Installer.exe is optional (downloaded at runtime if not bundled)
           [ -f src-tauri/resources/Git-Installer.exe ] || echo "placeholder" > src-tauri/resources/Git-Installer.exe
 
       - name: Build Tauri app
