@@ -1,0 +1,150 @@
+{
+  "nav": {
+    "dashboard": "Panel",
+    "setup": "Instalación",
+    "agents": "Agentes",
+    "settings": "Configuración"
+  },
+  "theme": {
+    "dark": "Tema Oscuro",
+    "light": "Tema Claro"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "subtitle": "Resumen de tu sistema My Brain Is Full Crew",
+    "heroDescription": "8 agentes IA para organizar tu bóveda de Obsidian con el poder de Claude",
+    "startInstall": "Iniciar Instalación",
+    "agentsCount": "{{count}} agentes",
+    "crewInstalled": "Crew Instalado",
+    "activeAgents": "Agentes Activos",
+    "viewAll": "Ver Todos"
+  },
+  "setup": {
+    "title": "Instalación",
+    "subtitle": "Instala todo lo necesario para usar My Brain Is Full Crew",
+    "recheck": "Verificar de nuevo",
+    "git": {
+      "title": "Git",
+      "description": "Sistema de control de versiones necesario para clonar y actualizar el crew"
+    },
+    "obsidian": {
+      "title": "Obsidian",
+      "description": "La aplicación donde vivirá tu bóveda y las notas organizadas por los agentes",
+      "installerIncluded": "instalador incluido",
+      "vault": "Bóveda de Obsidian",
+      "vaultDescription": "Selecciona la carpeta donde quieres crear o donde se encuentra tu bóveda",
+      "selectFolder": "Seleccionar Carpeta de la Bóveda",
+      "changeVault": "Cambiar Bóveda"
+    },
+    "clone": {
+      "title": "Clonar Repositorio",
+      "description": "Clona el repositorio de agentes en tu bóveda de Obsidian",
+      "cloneButton": "Clonar Repo",
+      "cloning": "Clonando...",
+      "update": "Actualizar (git pull)",
+      "installGitFirst": "Instala Git antes de continuar"
+    },
+    "crew": {
+      "title": "Instalar Agentes en la Bóveda",
+      "description": "Copia los 8 agentes, referencias, habilidades y archivos de configuración a tu bóveda",
+      "installButton": "Instalar Crew",
+      "installing": "Instalando...",
+      "cloneFirst": "Clona el repositorio antes de continuar"
+    },
+    "installButton": "Instalar {{name}}",
+    "installing": "Instalando...",
+    "installed": "Instalado",
+    "success": "¡Todo instalado! Abre la bóveda en Claude Code y di \"Initialize my vault\" para empezar.",
+    "openObsidian": "Abrir Obsidian"
+  },
+  "agents": {
+    "title": "Agentes",
+    "subtitle": "{{enabled}} agentes activos de {{total}} en total",
+    "loading": "Cargando...",
+    "searchPlaceholder": "Buscar agentes...",
+    "filterAll": "Todos",
+    "filterCore": "Principales",
+    "filterCustom": "Personalizados",
+    "filterEnabled": "Activos",
+    "filterDisabled": "Inactivos",
+    "coreAgents": "Agentes Principales ({{count}})",
+    "customAgents": "Agentes Personalizados ({{count}})",
+    "noVault": "Configura la bóveda en la página de Instalación primero para ver los agentes.",
+    "tools": "herramientas",
+    "drawer": {
+      "overview": "Resumen",
+      "configure": "Configurar",
+      "markdown": "Markdown",
+      "status": "Estado",
+      "name": "Nombre",
+      "model": "Modelo",
+      "type": "Tipo",
+      "typeCore": "Principal",
+      "typeCustom": "Personalizado",
+      "toolsCount": "Herramientas ({{count}})",
+      "noTools": "No hay herramientas configuradas",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "aiModel": "Modelo IA",
+      "toolsPermissions": "Herramientas y Permisos",
+      "agentActive": "Agente Activo",
+      "agentInactive": "Agente Inactivo",
+      "agentActiveDesc": "El agente participará en las operaciones",
+      "agentInactiveDesc": "El agente está desactivado",
+      "deleteAgent": "Eliminar Agente",
+      "markdownWarning": "Edita el Markdown bajo tu propia responsabilidad. Errores en el frontmatter YAML pueden impedir que el agente funcione.",
+      "save": "Guardar",
+      "markdownSaved": "¡Markdown guardado correctamente!",
+      "modelUpdated": "Modelo actualizado a {{model}}",
+      "toolsUpdated": "Herramientas actualizadas"
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Configura la aplicación",
+    "appearance": "Apariencia",
+    "themeDark": "Tema Oscuro",
+    "themeLight": "Tema Claro",
+    "themeToggleHint": "Cambiar entre tema claro y oscuro",
+    "vault": "Bóveda de Obsidian",
+    "vaultPlaceholder": "Selecciona la ruta de la bóveda...",
+    "browse": "Explorar",
+    "vaultSaved": "¡Ruta de la bóveda guardada correctamente!",
+    "info": "Información",
+    "version": "Versión",
+    "installed": "Instalado",
+    "notFound": "No encontrado",
+    "crewInstalled": "Instalado",
+    "crewNotInstalled": "No instalado",
+    "about": "My Brain Is Full Crew - 8 agentes IA para organizar tu bóveda de Obsidian con Claude. Creado por @gnekt (Christian Di Maio)."
+  },
+  "stats": {
+    "title": "Estadisticas de la Boveda",
+    "subtitle": "Resumen del contenido de tu boveda de Obsidian",
+    "totalNotes": "Notas",
+    "totalFolders": "Carpetas",
+    "totalTags": "Etiquetas Unicas",
+    "totalLinks": "Enlaces Internos",
+    "totalWords": "Palabras",
+    "totalSize": "Tamano Total",
+    "topTags": "Etiquetas Principales",
+    "recentNotes": "Notas Recientes",
+    "notesByDepth": "Notas por Profundidad",
+    "depthLevel": "Nivel {{depth}}",
+    "depthRoot": "Raiz",
+    "noData": "No hay datos disponibles. Configura primero una boveda.",
+    "occurrences": "{{count}} usos",
+    "modified": "Modificado",
+    "refresh": "Actualizar Estadisticas"
+  },
+  "language": {
+    "label": "Idioma",
+    "en": "English",
+    "it": "Italiano",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "pt": "Português",
+    "zh": "中文"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "nav": {
+    "dashboard": "Übersicht",
+    "setup": "Installation",
+    "agents": "Agenten",
+    "settings": "Einstellungen"
+  },
+  "theme": {
+    "dark": "Dunkles Theme",
+    "light": "Helles Theme"
+  },
+  "dashboard": {
+    "title": "Übersicht",
+    "subtitle": "Überblick über dein My Brain Is Full Crew System",
+    "heroDescription": "8 KI-Agenten zur Organisation deines Obsidian-Tresors mit der Kraft von Claude",
+    "startInstall": "Installation starten",
+    "agentsCount": "{{count}} Agenten",
+    "crewInstalled": "Crew Installiert",
+    "activeAgents": "Aktive Agenten",
+    "viewAll": "Alle anzeigen"
+  },
+  "setup": {
+    "title": "Installation",
+    "subtitle": "Installiere alles, was du für My Brain Is Full Crew brauchst",
+    "recheck": "Erneut prüfen",
+    "git": {
+      "title": "Git",
+      "description": "Versionskontrollsystem, das zum Klonen und Aktualisieren des Crews benötigt wird"
+    },
+    "obsidian": {
+      "title": "Obsidian",
+      "description": "Die App, in der dein Tresor und die von Agenten organisierten Notizen gespeichert werden",
+      "installerIncluded": "Installationsprogramm enthalten",
+      "vault": "Obsidian-Tresor",
+      "vaultDescription": "Wähle den Ordner, in dem du deinen Tresor erstellen möchtest oder in dem er sich befindet",
+      "selectFolder": "Tresor-Ordner auswählen",
+      "changeVault": "Tresor wechseln"
+    },
+    "clone": {
+      "title": "Repository klonen",
+      "description": "Klone das Agenten-Repository in deinen Obsidian-Tresor",
+      "cloneButton": "Repo klonen",
+      "cloning": "Wird geklont...",
+      "update": "Aktualisieren (git pull)",
+      "installGitFirst": "Installiere zuerst Git, bevor du fortfährst"
+    },
+    "crew": {
+      "title": "Agenten im Tresor installieren",
+      "description": "Kopiere die 8 Agenten, Referenzen, Fähigkeiten und Konfigurationsdateien in deinen Tresor",
+      "installButton": "Crew installieren",
+      "installing": "Wird installiert...",
+      "cloneFirst": "Klone zuerst das Repository, bevor du fortfährst"
+    },
+    "installButton": "{{name}} installieren",
+    "installing": "Wird installiert...",
+    "installed": "Installiert",
+    "success": "Alles installiert! Öffne den Tresor in Claude Code und sage \"Initialize my vault\", um loszulegen.",
+    "openObsidian": "Obsidian öffnen"
+  },
+  "agents": {
+    "title": "Agenten",
+    "subtitle": "{{enabled}} aktive Agenten von {{total}} insgesamt",
+    "loading": "Wird geladen...",
+    "searchPlaceholder": "Agenten suchen...",
+    "filterAll": "Alle",
+    "filterCore": "Kern",
+    "filterCustom": "Benutzerdefiniert",
+    "filterEnabled": "Aktiv",
+    "filterDisabled": "Inaktiv",
+    "coreAgents": "Kern-Agenten ({{count}})",
+    "customAgents": "Benutzerdefinierte Agenten ({{count}})",
+    "noVault": "Konfiguriere zuerst den Tresor auf der Installationsseite, um Agenten zu sehen.",
+    "tools": "Werkzeuge",
+    "drawer": {
+      "overview": "Überblick",
+      "configure": "Konfigurieren",
+      "markdown": "Markdown",
+      "status": "Status",
+      "name": "Name",
+      "model": "Modell",
+      "type": "Typ",
+      "typeCore": "Kern",
+      "typeCustom": "Benutzerdefiniert",
+      "toolsCount": "Werkzeuge ({{count}})",
+      "noTools": "Keine Werkzeuge konfiguriert",
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "aiModel": "KI-Modell",
+      "toolsPermissions": "Werkzeuge & Berechtigungen",
+      "agentActive": "Agent Aktiv",
+      "agentInactive": "Agent Inaktiv",
+      "agentActiveDesc": "Der Agent wird an Operationen teilnehmen",
+      "agentInactiveDesc": "Der Agent ist deaktiviert",
+      "deleteAgent": "Agent löschen",
+      "markdownWarning": "Bearbeite das Markdown auf eigene Gefahr. Fehler im YAML-Frontmatter können den Agenten am Funktionieren hindern.",
+      "save": "Speichern",
+      "markdownSaved": "Markdown erfolgreich gespeichert!",
+      "modelUpdated": "Modell aktualisiert auf {{model}}",
+      "toolsUpdated": "Werkzeuge aktualisiert"
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Anwendung konfigurieren",
+    "appearance": "Erscheinungsbild",
+    "themeDark": "Dunkles Theme",
+    "themeLight": "Helles Theme",
+    "themeToggleHint": "Zwischen hellem und dunklem Theme wechseln",
+    "vault": "Obsidian-Tresor",
+    "vaultPlaceholder": "Tresor-Pfad auswählen...",
+    "browse": "Durchsuchen",
+    "vaultSaved": "Tresor-Pfad erfolgreich gespeichert!",
+    "info": "Informationen",
+    "version": "Version",
+    "installed": "Installiert",
+    "notFound": "Nicht gefunden",
+    "crewInstalled": "Installiert",
+    "crewNotInstalled": "Nicht installiert",
+    "about": "My Brain Is Full Crew - 8 KI-Agenten zur Organisation deines Obsidian-Tresors mit Claude. Erstellt von @gnekt (Christian Di Maio)."
+  },
+  "stats": {
+    "title": "Tresor-Statistiken",
+    "subtitle": "Uberblick uber den Inhalt deines Obsidian-Tresors",
+    "totalNotes": "Notizen",
+    "totalFolders": "Ordner",
+    "totalTags": "Einzigartige Tags",
+    "totalLinks": "Interne Links",
+    "totalWords": "Worter",
+    "totalSize": "Gesamtgrosse",
+    "topTags": "Top Tags",
+    "recentNotes": "Neueste Notizen",
+    "notesByDepth": "Notizen nach Tiefe",
+    "depthLevel": "Ebene {{depth}}",
+    "depthRoot": "Wurzel",
+    "noData": "Keine Daten verfugbar. Konfiguriere zuerst einen Tresor.",
+    "occurrences": "{{count}} Verwendungen",
+    "modified": "Geandert",
+    "refresh": "Statistiken aktualisieren"
+  },
+  "language": {
+    "label": "Sprache",
+    "en": "English",
+    "it": "Italiano",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "pt": "Português",
+    "zh": "中文"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "nav": {
+    "dashboard": "仪表盘",
+    "setup": "安装",
+    "agents": "代理",
+    "settings": "设置"
+  },
+  "theme": {
+    "dark": "深色主题",
+    "light": "浅色主题"
+  },
+  "dashboard": {
+    "title": "仪表盘",
+    "subtitle": "My Brain Is Full Crew 系统概览",
+    "heroDescription": "8 个 AI 代理，借助 Claude 的力量整理你的 Obsidian 知识库",
+    "startInstall": "开始安装",
+    "agentsCount": "{{count}} 个代理",
+    "crewInstalled": "Crew 已安装",
+    "activeAgents": "活跃代理",
+    "viewAll": "查看全部"
+  },
+  "setup": {
+    "title": "安装",
+    "subtitle": "安装使用 My Brain Is Full Crew 所需的一切",
+    "recheck": "重新检查",
+    "git": {
+      "title": "Git",
+      "description": "克隆和更新 crew 所需的版本控制系统"
+    },
+    "obsidian": {
+      "title": "Obsidian",
+      "description": "你的知识库和由代理整理的笔记将存放在此应用中",
+      "installerIncluded": "已包含安装程序",
+      "vault": "Obsidian 知识库",
+      "vaultDescription": "选择你想要创建知识库的文件夹或知识库所在的文件夹",
+      "selectFolder": "选择知识库文件夹",
+      "changeVault": "更改知识库"
+    },
+    "clone": {
+      "title": "克隆仓库",
+      "description": "将代理仓库克隆到你的 Obsidian 知识库中",
+      "cloneButton": "克隆仓库",
+      "cloning": "正在克隆...",
+      "update": "更新 (git pull)",
+      "installGitFirst": "请先安装 Git"
+    },
+    "crew": {
+      "title": "在知识库中安装代理",
+      "description": "将 8 个代理、参考资料、技能和配置文件复制到你的知识库中",
+      "installButton": "安装 Crew",
+      "installing": "正在安装...",
+      "cloneFirst": "请先克隆仓库"
+    },
+    "installButton": "安装 {{name}}",
+    "installing": "正在安装...",
+    "installed": "已安装",
+    "success": "全部安装完成！在 Claude Code 中打开知识库并输入 \"Initialize my vault\" 即可开始。",
+    "openObsidian": "打开 Obsidian"
+  },
+  "agents": {
+    "title": "代理",
+    "subtitle": "共 {{total}} 个代理中有 {{enabled}} 个处于活跃状态",
+    "loading": "加载中...",
+    "searchPlaceholder": "搜索代理...",
+    "filterAll": "全部",
+    "filterCore": "核心",
+    "filterCustom": "自定义",
+    "filterEnabled": "已启用",
+    "filterDisabled": "已禁用",
+    "coreAgents": "核心代理 ({{count}})",
+    "customAgents": "自定义代理 ({{count}})",
+    "noVault": "请先在安装页面配置知识库，然后才能查看代理。",
+    "tools": "工具",
+    "drawer": {
+      "overview": "概览",
+      "configure": "配置",
+      "markdown": "Markdown",
+      "status": "状态",
+      "name": "名称",
+      "model": "模型",
+      "type": "类型",
+      "typeCore": "核心",
+      "typeCustom": "自定义",
+      "toolsCount": "工具 ({{count}})",
+      "noTools": "未配置工具",
+      "active": "已启用",
+      "inactive": "已禁用",
+      "aiModel": "AI 模型",
+      "toolsPermissions": "工具与权限",
+      "agentActive": "代理已启用",
+      "agentInactive": "代理已禁用",
+      "agentActiveDesc": "该代理将参与操作",
+      "agentInactiveDesc": "该代理已停用",
+      "deleteAgent": "删除代理",
+      "markdownWarning": "编辑 Markdown 需自行承担风险。YAML 前置元数据中的错误可能导致代理无法正常工作。",
+      "save": "保存",
+      "markdownSaved": "Markdown 保存成功！",
+      "modelUpdated": "模型已更新为 {{model}}",
+      "toolsUpdated": "工具已更新"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "subtitle": "配置应用程序",
+    "appearance": "外观",
+    "themeDark": "深色主题",
+    "themeLight": "浅色主题",
+    "themeToggleHint": "在浅色和深色主题之间切换",
+    "vault": "Obsidian 知识库",
+    "vaultPlaceholder": "选择知识库路径...",
+    "browse": "浏览",
+    "vaultSaved": "知识库路径保存成功！",
+    "info": "信息",
+    "version": "版本",
+    "installed": "已安装",
+    "notFound": "未找到",
+    "crewInstalled": "已安装",
+    "crewNotInstalled": "未安装",
+    "about": "My Brain Is Full Crew - 8 个 AI 代理，借助 Claude 整理你的 Obsidian 知识库。由 @gnekt (Christian Di Maio) 创建。"
+  },
+  "stats": {
+    "title": "知识库统计",
+    "subtitle": "Obsidian 知识库内容概览",
+    "totalNotes": "笔记",
+    "totalFolders": "文件夹",
+    "totalTags": "唯一标签",
+    "totalLinks": "内部链接",
+    "totalWords": "字数",
+    "totalSize": "总大小",
+    "topTags": "热门标签",
+    "recentNotes": "最近笔记",
+    "notesByDepth": "按深度统计",
+    "depthLevel": "第 {{depth}} 层",
+    "depthRoot": "根目录",
+    "noData": "暂无数据。请先配置知识库。",
+    "occurrences": "{{count}} 次使用",
+    "modified": "修改时间",
+    "refresh": "刷新统计"
+  },
+  "language": {
+    "label": "语言",
+    "en": "English",
+    "it": "Italiano",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "pt": "Português",
+    "zh": "中文"
+  }
+}

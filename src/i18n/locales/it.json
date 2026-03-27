@@ -1,0 +1,150 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "setup": "Installazione",
+    "agents": "Agenti",
+    "settings": "Impostazioni"
+  },
+  "theme": {
+    "dark": "Tema Scuro",
+    "light": "Tema Chiaro"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Panoramica del tuo sistema My Brain Is Full Crew",
+    "heroDescription": "8 agenti AI per organizzare il tuo vault Obsidian con la potenza di Claude",
+    "startInstall": "Inizia l'installazione",
+    "agentsCount": "{{count}} agenti",
+    "crewInstalled": "Crew Installata",
+    "activeAgents": "Agenti Attivi",
+    "viewAll": "Vedi tutti"
+  },
+  "setup": {
+    "title": "Installazione",
+    "subtitle": "Installa tutto il necessario per usare My Brain Is Full Crew",
+    "recheck": "Ricontrolla",
+    "git": {
+      "title": "Git",
+      "description": "Sistema di controllo versione necessario per clonare e aggiornare la crew"
+    },
+    "obsidian": {
+      "title": "Obsidian",
+      "description": "L'app dove vivrà il tuo vault e i tuoi appunti organizzati dagli agenti",
+      "installerIncluded": "installer incluso",
+      "vault": "Vault Obsidian",
+      "vaultDescription": "Seleziona la cartella dove vuoi creare o dove si trova il tuo vault",
+      "selectFolder": "Seleziona Cartella Vault",
+      "changeVault": "Cambia Vault"
+    },
+    "clone": {
+      "title": "Clona Repository",
+      "description": "Clona la repository degli agenti nel tuo vault Obsidian",
+      "cloneButton": "Clona Repo",
+      "cloning": "Clonazione...",
+      "update": "Aggiorna (git pull)",
+      "installGitFirst": "Installa Git prima di procedere"
+    },
+    "crew": {
+      "title": "Installa Agenti nel Vault",
+      "description": "Copia gli 8 agenti, i riferimenti, le skills e i file di configurazione nel tuo vault",
+      "installButton": "Installa Crew",
+      "installing": "Installazione...",
+      "cloneFirst": "Clona la repository prima di procedere"
+    },
+    "installButton": "Installa {{name}}",
+    "installing": "Installazione...",
+    "installed": "Installato",
+    "success": "Tutto installato! Apri il vault in Claude Code e di' \"Inizializza il mio vault\" per partire.",
+    "openObsidian": "Apri Obsidian"
+  },
+  "agents": {
+    "title": "Agenti",
+    "subtitle": "{{enabled}} agenti attivi su {{total}} totali",
+    "loading": "Caricamento...",
+    "searchPlaceholder": "Cerca agenti...",
+    "filterAll": "Tutti",
+    "filterCore": "Core",
+    "filterCustom": "Custom",
+    "filterEnabled": "Attivi",
+    "filterDisabled": "Disattivi",
+    "coreAgents": "Agenti Core ({{count}})",
+    "customAgents": "Agenti Custom ({{count}})",
+    "noVault": "Configura prima il vault nella pagina Installazione per vedere gli agenti.",
+    "tools": "tools",
+    "drawer": {
+      "overview": "Panoramica",
+      "configure": "Configura",
+      "markdown": "Markdown",
+      "status": "Stato",
+      "name": "Nome",
+      "model": "Modello",
+      "type": "Tipo",
+      "typeCore": "Core",
+      "typeCustom": "Personalizzato",
+      "toolsCount": "Strumenti ({{count}})",
+      "noTools": "Nessuno strumento configurato",
+      "active": "Attivo",
+      "inactive": "Disattivo",
+      "aiModel": "Modello AI",
+      "toolsPermissions": "Strumenti & Permessi",
+      "agentActive": "Agente Attivo",
+      "agentInactive": "Agente Disattivo",
+      "agentActiveDesc": "L'agente parteciperà alle operazioni",
+      "agentInactiveDesc": "L'agente è disattivato",
+      "deleteAgent": "Elimina Agente",
+      "markdownWarning": "Modifica il markdown a tuo rischio. Errori nel frontmatter YAML possono impedire il funzionamento dell'agente.",
+      "save": "Salva",
+      "markdownSaved": "Markdown salvato con successo!",
+      "modelUpdated": "Modello aggiornato a {{model}}",
+      "toolsUpdated": "Strumenti aggiornati"
+    }
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "subtitle": "Configura l'applicazione",
+    "appearance": "Aspetto",
+    "themeDark": "Tema Scuro",
+    "themeLight": "Tema Chiaro",
+    "themeToggleHint": "Cambia tra tema chiaro e scuro",
+    "vault": "Vault Obsidian",
+    "vaultPlaceholder": "Seleziona il percorso del vault...",
+    "browse": "Sfoglia",
+    "vaultSaved": "Percorso vault salvato con successo!",
+    "info": "Informazioni",
+    "version": "Versione",
+    "installed": "Installato",
+    "notFound": "Non trovato",
+    "crewInstalled": "Installata",
+    "crewNotInstalled": "Non installata",
+    "about": "My Brain Is Full Crew - 8 agenti AI per organizzare il tuo vault Obsidian con Claude. Creato da @gnekt (Christian Di Maio)."
+  },
+  "stats": {
+    "title": "Statistiche Vault",
+    "subtitle": "Panoramica dei contenuti del tuo vault Obsidian",
+    "totalNotes": "Note",
+    "totalFolders": "Cartelle",
+    "totalTags": "Tag Unici",
+    "totalLinks": "Link Interni",
+    "totalWords": "Parole",
+    "totalSize": "Dimensione Totale",
+    "topTags": "Tag Principali",
+    "recentNotes": "Note Recenti",
+    "notesByDepth": "Note per Profondita'",
+    "depthLevel": "Livello {{depth}}",
+    "depthRoot": "Radice",
+    "noData": "Nessun dato disponibile. Configura prima un vault.",
+    "occurrences": "{{count}} utilizzi",
+    "modified": "Modificato",
+    "refresh": "Aggiorna Statistiche"
+  },
+  "language": {
+    "label": "Lingua",
+    "en": "English",
+    "it": "Italiano",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "pt": "Português",
+    "zh": "中文"
+  }
+}

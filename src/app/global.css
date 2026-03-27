@@ -1,0 +1,32 @@
+html {
+    user-select: none;
+    height: 100%;
+    overscroll-behavior: none;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+#root {
+    height: 100%;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.5);
+}

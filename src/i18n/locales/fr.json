@@ -1,0 +1,150 @@
+{
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "setup": "Installation",
+    "agents": "Agents",
+    "settings": "Paramètres"
+  },
+  "theme": {
+    "dark": "Thème Sombre",
+    "light": "Thème Clair"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Aperçu de votre système My Brain Is Full Crew",
+    "heroDescription": "8 agents IA pour organiser votre coffre Obsidian avec la puissance de Claude",
+    "startInstall": "Démarrer l'Installation",
+    "agentsCount": "{{count}} agents",
+    "crewInstalled": "Crew Installé",
+    "activeAgents": "Agents Actifs",
+    "viewAll": "Voir Tout"
+  },
+  "setup": {
+    "title": "Installation",
+    "subtitle": "Installez tout le nécessaire pour utiliser My Brain Is Full Crew",
+    "recheck": "Revérifier",
+    "git": {
+      "title": "Git",
+      "description": "Système de contrôle de version nécessaire pour cloner et mettre à jour le crew"
+    },
+    "obsidian": {
+      "title": "Obsidian",
+      "description": "L'application où vivront votre coffre et les notes organisées par les agents",
+      "installerIncluded": "installateur inclus",
+      "vault": "Coffre Obsidian",
+      "vaultDescription": "Sélectionnez le dossier où vous souhaitez créer ou où se trouve votre coffre",
+      "selectFolder": "Sélectionner le Dossier du Coffre",
+      "changeVault": "Changer de Coffre"
+    },
+    "clone": {
+      "title": "Cloner le Dépôt",
+      "description": "Clonez le dépôt des agents dans votre coffre Obsidian",
+      "cloneButton": "Cloner le Dépôt",
+      "cloning": "Clonage en cours...",
+      "update": "Mettre à jour (git pull)",
+      "installGitFirst": "Installez Git avant de continuer"
+    },
+    "crew": {
+      "title": "Installer les Agents dans le Coffre",
+      "description": "Copiez les 8 agents, références, compétences et fichiers de configuration dans votre coffre",
+      "installButton": "Installer le Crew",
+      "installing": "Installation en cours...",
+      "cloneFirst": "Clonez le dépôt avant de continuer"
+    },
+    "installButton": "Installer {{name}}",
+    "installing": "Installation en cours...",
+    "installed": "Installé",
+    "success": "Tout est installé ! Ouvrez le coffre dans Claude Code et dites \"Initialize my vault\" pour commencer.",
+    "openObsidian": "Ouvrir Obsidian"
+  },
+  "agents": {
+    "title": "Agents",
+    "subtitle": "{{enabled}} agents actifs sur {{total}} au total",
+    "loading": "Chargement...",
+    "searchPlaceholder": "Rechercher des agents...",
+    "filterAll": "Tous",
+    "filterCore": "Principaux",
+    "filterCustom": "Personnalisés",
+    "filterEnabled": "Actifs",
+    "filterDisabled": "Inactifs",
+    "coreAgents": "Agents Principaux ({{count}})",
+    "customAgents": "Agents Personnalisés ({{count}})",
+    "noVault": "Configurez le coffre dans la page d'Installation d'abord pour voir les agents.",
+    "tools": "outils",
+    "drawer": {
+      "overview": "Aperçu",
+      "configure": "Configurer",
+      "markdown": "Markdown",
+      "status": "Statut",
+      "name": "Nom",
+      "model": "Modèle",
+      "type": "Type",
+      "typeCore": "Principal",
+      "typeCustom": "Personnalisé",
+      "toolsCount": "Outils ({{count}})",
+      "noTools": "Aucun outil configuré",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "aiModel": "Modèle IA",
+      "toolsPermissions": "Outils et Permissions",
+      "agentActive": "Agent Actif",
+      "agentInactive": "Agent Inactif",
+      "agentActiveDesc": "L'agent participera aux opérations",
+      "agentInactiveDesc": "L'agent est désactivé",
+      "deleteAgent": "Supprimer l'Agent",
+      "markdownWarning": "Modifiez le Markdown à vos risques et périls. Des erreurs dans le frontmatter YAML peuvent empêcher l'agent de fonctionner.",
+      "save": "Enregistrer",
+      "markdownSaved": "Markdown enregistré avec succès !",
+      "modelUpdated": "Modèle mis à jour vers {{model}}",
+      "toolsUpdated": "Outils mis à jour"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Configurez l'application",
+    "appearance": "Apparence",
+    "themeDark": "Thème Sombre",
+    "themeLight": "Thème Clair",
+    "themeToggleHint": "Basculer entre le thème clair et sombre",
+    "vault": "Coffre Obsidian",
+    "vaultPlaceholder": "Sélectionnez le chemin du coffre...",
+    "browse": "Parcourir",
+    "vaultSaved": "Chemin du coffre enregistré avec succès !",
+    "info": "Informations",
+    "version": "Version",
+    "installed": "Installé",
+    "notFound": "Non trouvé",
+    "crewInstalled": "Installé",
+    "crewNotInstalled": "Non installé",
+    "about": "My Brain Is Full Crew - 8 agents IA pour organiser votre coffre Obsidian avec Claude. Créé par @gnekt (Christian Di Maio)."
+  },
+  "stats": {
+    "title": "Statistiques du Coffre",
+    "subtitle": "Apercu du contenu de votre coffre Obsidian",
+    "totalNotes": "Notes",
+    "totalFolders": "Dossiers",
+    "totalTags": "Tags Uniques",
+    "totalLinks": "Liens Internes",
+    "totalWords": "Mots",
+    "totalSize": "Taille Totale",
+    "topTags": "Tags Principaux",
+    "recentNotes": "Notes Recentes",
+    "notesByDepth": "Notes par Profondeur",
+    "depthLevel": "Niveau {{depth}}",
+    "depthRoot": "Racine",
+    "noData": "Aucune donnee disponible. Configurez d'abord un coffre.",
+    "occurrences": "{{count}} utilisations",
+    "modified": "Modifie",
+    "refresh": "Actualiser les Statistiques"
+  },
+  "language": {
+    "label": "Langue",
+    "en": "English",
+    "it": "Italiano",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "pt": "Português",
+    "zh": "中文"
+  }
+}
